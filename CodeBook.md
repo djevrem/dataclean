@@ -1,4 +1,4 @@
-## Loading and merging data
+## Loading and merging input data
 
 Data is initially read from the supplied input data set for activity labels, subject labels 
 ```
@@ -17,10 +17,24 @@ trainSubject <- read.table("har\\train\\subject_train.txt")
 trainData <- cbind(trainData, trainActivityLabel, trainSubject)
 ```
 
+##Merging training and test data
+
 Further, an 'rbind' command is used to join test and train data row-wise.
+```
+#merge them into one data set
+newData<-rbind(testData,trainData)
+```
 
 A grep command is used to extract columns which have mean() or std() substrings. For the given data set this yields 66 columns. Appending activity and subject label columns results in a total of 68 columns.
+```
+#read features and their names from the file
+features <- read.table("har\\features.txt")
 
+#extract those fearures which refer to mean and standard deviation
+indStd <- grep("std\\(\\)",features[,2])
+indMean <- grep("mean\\(\\)",features[,2])
+ind <- c(indStd, indMean)
+```
 
 ## Computation of mean values for mean() and std() columns
 
