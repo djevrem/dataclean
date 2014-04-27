@@ -15,6 +15,9 @@ trainData <- cbind(trainData, trainActivityLabel, trainSubject)
 #merge them into one data set
 newData<-rbind(testData,trainData)
 
+#num distinct subjects
+numSubjects <- length(unique(newData[,ncol(newData)]))
+
 #read features and their names from the file
 features <- read.table("har\\features.txt")
 
@@ -24,27 +27,27 @@ indMean <- grep("mean\\(\\)",features[,2])
 ind <- c(indStd, indMean)
 
 #now subset the data set according to extracted columns
-newExtData <- newData[,c(ind, 562, 563)]
+newExtData <- newData[,c(ind, ncol(newData)-1, ncol(newData))]
 
 #initialize the array which will hold summary data for every pair (activity, subject)
 totalAvgData <- c()
 
 #iterate over the selected mean or std features, and for every pair (activity,subject) compute the mean
 for (i in 1:length(ind)) {
-  avgExtData <- by(newExtData[,i], newExtData[,c(67,68)],mean)
+  avgExtData <- by(newExtData[,i], newExtData[,c(length(ind)+1, length(ind)+2)],mean)
   
   #append the means for the current feature to to matrix column wise
   totalAvgData <- cbind(totalAvgData, as.vector(avgExtData))
 }
 
 #add the activity and subject columns to the right of the matrix/array
-totalAvgData <- cbind(totalAvgData, activityLabels[rep(1:6,30),2], rep(1:30, each=6))
+totalAvgData <- cbind(totalAvgData, activityLabels[rep(1:nrow(activityLabels),numSubjects),2], rep(1:numSubjects, each=nrow(activityLabels)))
 
 
 #create a data frame, and assign descriptive names to columns
 finalAvgData <- data.frame(totalAvgData)
 colnames(finalAvgData)[1:length(ind)] <- as.character(features[ind,2])
-colnames(finalAvgData)[c(67,68)] <-c("activity","subject")
+colnames(finalAvgData)[c(length(ind)+1, length(ind)+2)] <-c("activity","subject")
 
 # assign acitvity names to the "activity" column instead of numerical values
 finalAvgData[,"activity"] <- activityLabels[finalAvgData[,"activity"],2] 
