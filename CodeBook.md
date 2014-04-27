@@ -1,6 +1,21 @@
 ## Loading and merging data
 
 Data is initially read from the supplied input data set for activity labels, subject labels 
+```
+#read activity labels
+activityLabels <- read.table("har\\activity_labels.txt")
+
+#read the test and training attribute data
+testData <- read.table("har\\test\\X_test.txt")
+testActivityLabel <- read.table("har\\test\\y_test.txt")
+testSubject <- read.table("har\\test\\subject_test.txt")
+testData <- cbind(testData, testActivityLabel, testSubject)
+
+trainData <- read.table("har\\train\\X_train.txt")
+trainActivityLabel <- read.table("har\\train\\y_train.txt")
+trainSubject <- read.table("har\\train\\subject_train.txt")
+trainData <- cbind(trainData, trainActivityLabel, trainSubject)
+```
 
 Further, an 'rbind' command is used to join test and train data row-wise.
 
@@ -29,6 +44,13 @@ colnames(finalAvgData)[c(67,68)] <-c("activity","subject")
 
 # assign acitvity names to the "activity" column instead of numerical values
 finalAvgData[,"activity"] <- activityLabels[finalAvgData[,"activity"],2]
+```
+
+Finally, the data frame is saved as 180 x 68 table into a text file as
+
+```
+#save the final tidy data set to file
+write.table(finalAvgData,file="myTidySet.txt")
 ```
 
 
