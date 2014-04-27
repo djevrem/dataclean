@@ -60,6 +60,8 @@ colnames(finalAvgData)[c(67,68)] <-c("activity","subject")
 finalAvgData[,"activity"] <- activityLabels[finalAvgData[,"activity"],2]
 ```
 
+##Saving result to output file
+
 Finally, the data frame is saved as 180 x 68 table into a text file as
 
 ```
